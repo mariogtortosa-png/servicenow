@@ -1,0 +1,20 @@
+(function executeRule(current, previous /*null when async*/ ) {
+
+    var siblings = new GlideRecord('incident');
+    siblings.addQuery('parent_incident', current.parent_incident); //Query to match incidents that share father
+    siblings.addQuery('state', '!=', '7'); //Query to match UNCLOSED incidents
+    siblings.setLimit(1); //Limit the query
+    siblings.query();
+    if (siblings.hasNext()) return; // If at least one is still open, return
+
+
+    var parent = new GlideRecord('incident');
+    if (parent.get(current.parent_incident)) { //Obtains father incidents
+        parent.state = 7; //Update to closed
+        parent.close_code = 'Resolved by change';
+        parent.close_notes = 'Closenotes of child incident: ' + current.close_notes.toString();
+        parent.update();
+        gs.addInfoMessage("Father incident closed: " + parent.getDisplayValue()); //Info message with the closed incident
+    }
+
+})(current, previous);
