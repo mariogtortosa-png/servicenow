@@ -1,0 +1,13 @@
+var UserInfo = Class.create();
+UserInfo.prototype = Object.extendsObject(AbstractAjaxProcessor, {
+
+    getPhone: function() {
+        var gr = new GlideRecord('sys_user');
+        if (gr.get(this.getParameter('sysparm_user')))
+            return gr.mobile_phone.toString();
+        return '';
+
+    },
+
+    type: 'UserInfo'
+});
