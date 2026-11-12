@@ -1,0 +1,23 @@
+function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+    if (isLoading || newValue === '') {
+        return;
+    }
+//first clear previous messages
+	g_form.clearMessages();
+
+//call the User Info script include and pass the parameters
+    var ga = new GlideAjax('UserInfo');
+    ga.addParam('sysparm_name', 'getPhone');
+    ga.addParam('sysparm_user', newValue);
+
+//get the answer, if is not empty show a message
+//if it's empty show a different one
+    ga.getXMLAnswer(function(resp) {
+            if (!resp == '') {
+                g_form.addInfoMessage('Caller phone is: ' + resp);
+            } else {
+                g_form.addInfoMessage('Caller phone is empty');
+            }
+        });
+
+}
