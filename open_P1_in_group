@@ -1,0 +1,22 @@
+(function executeRule(current, previous) {
+
+    //count the incidents which
+    //are active, in the user's group, are P1
+    var ga = new GlideAggregate('incident');
+    ga.addActiveQuery();
+    ga.addQuery('assignment_group', current.getValue('assignment_group'));
+    ga.addQuery('priority', 1);
+    ga.addAggregate('COUNT');
+    ga.query();
+
+    //variable to show the number of incidents
+    var count = 0;
+
+    //if records are found, we update the variable
+    //with the number of records counted on the aggregate and display a message to user
+    if (ga.next()) {
+        count = parseInt(ga.getAggregate('COUNT'), 10);
+        gs.addInfoMessage('Incidentes P1 abiertos en tu grupo: ' + count);
+
+    }
+})(current, previous);
